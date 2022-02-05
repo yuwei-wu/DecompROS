@@ -25,8 +25,9 @@ class DecompBase {
      *
      * This virtual bounding box is parallel to the line segment, the x,y,z axes are not w.r.t the world coordinate system, but instead, x-axis is parallel to the line, y-axis is perpendicular to the line and world z-axis, z-axis is perpendiculat to the line and y-axis
      */
-    void set_local_bbox(const Vecf<Dim>& bbox) {
+    void set_local_bbox(const Vecf<Dim>& bbox, const Vecf<Dim>& lbox) {
       local_bbox_ = bbox;
+      local_left_bbox_ = lbox;
     }
 
     ///Import obstacle points
@@ -92,5 +93,6 @@ class DecompBase {
 
     /// Local bounding box along the line segment
     Vecf<Dim> local_bbox_{Vecf<Dim>::Zero()};
+    Vecf<Dim> local_left_bbox_{Vecf<Dim>::Zero()};
 };
 #endif

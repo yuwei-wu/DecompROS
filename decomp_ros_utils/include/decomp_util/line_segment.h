@@ -61,13 +61,13 @@ class LineSegment : public DecompBase<Dim> {
 
       // along x
       Vecf<Dim> pp1 = p1_ + dir_h * this->local_bbox_(1);
-      Vecf<Dim> pp2 = p1_ - dir_h * this->local_bbox_(1);
+      Vecf<Dim> pp2 = p1_ - dir_h * this->local_left_bbox_(1);
       Vs.add(Hyperplane<Dim>(pp1, dir_h));
       Vs.add(Hyperplane<Dim>(pp2, -dir_h));
 
       // along y
       Vecf<Dim> pp3 = p2_ + dir * this->local_bbox_(0);
-      Vecf<Dim> pp4 = p1_ - dir * this->local_bbox_(0);
+      Vecf<Dim> pp4 = p1_ - dir * this->local_left_bbox_(0);
       Vs.add(Hyperplane<Dim>(pp3, dir));
       Vs.add(Hyperplane<Dim>(pp4, -dir));
 
@@ -78,7 +78,7 @@ class LineSegment : public DecompBase<Dim> {
         dir_v(1) = dir(2) * dir_h(0) - dir(0) * dir_h(2);
         dir_v(2) = dir(0) * dir_h(1) - dir(1) * dir_h(0);
         Vecf<Dim> pp5 = p1_ + dir_v * this->local_bbox_(2);
-        Vecf<Dim> pp6 = p1_ - dir_v * this->local_bbox_(2);
+        Vecf<Dim> pp6 = p1_ - dir_v * this->local_left_bbox_(2);
         Vs.add(Hyperplane<Dim>(pp5, dir_v));
         Vs.add(Hyperplane<Dim>(pp6, -dir_v));
       }

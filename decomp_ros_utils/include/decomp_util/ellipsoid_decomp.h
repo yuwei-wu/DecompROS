@@ -7,6 +7,8 @@
 
 #include <memory>
 #include <decomp_util/line_segment.h>
+#include <Eigen/Eigen>
+
 
 /**
  * @brief EllipsoidDecomp Class
@@ -31,8 +33,12 @@ public:
  ///Set obstacle points
  void set_obs(const vec_Vecf<Dim> &obs) { obs_ = obs; }
 
- ///Set dimension of bounding box
- void set_local_bbox(const Vecf<Dim>& bbox) { local_bbox_ = bbox; }
+ ///Set dimension of bounding box 
+  void set_local_bbox(const Vecf<Dim>& bbox, const Vecf<Dim>& lbox) {
+  local_bbox_ = bbox;
+  local_left_bbox_ = lbox;
+  }
+
 
  ///Get the path that is used for dilation
  vec_Vecf<Dim> get_path() const { return path_; }
@@ -42,6 +48,30 @@ public:
 
  ///Get the ellipsoids
  vec_E<Ellipsoid<Dim>> get_ellipsoids() const { return ellipsoids_; }
+
+ std::vector<Eigen::MatrixXd> get_hPoly(){
+   std::vector<Eigen::MatrixXd>  hPolys;
+   Eigen::MatrixXd hPoly;
+   for(auto& it: polyhedrons_){
+     auto vs = it.vs_;
+     hPoly.resize(6, vs.size());
+    
+     
+     for (unsigned int i = 0; i < vs.size(); i++){
+      auto v = vs[i];
+
+      hPoly.col(i).head(3) = v.p_;
+      hPoly.col(i).tail(3) = v.n_;   // normal must go outside
+
+     }
+     hPolys.push_back(hPoly);
+
+   }
+  
+  return hPolys;
+ }
+  
+
 
  ///Get the constraints of SFC as \f$Ax\leq b \f$
  vec_E<LinearConstraint<Dim>> get_constraints() const {
@@ -67,7 +97,7 @@ public:
 
    for (unsigned int i = 0; i < N; i++) {
      lines_[i] = std::make_shared<LineSegment<Dim>>(path[i], path[i+1]);
-     lines_[i]->set_local_bbox(local_bbox_);
+     lines_[i]->set_local_bbox(local_bbox_, local_left_bbox_);
      lines_[i]->set_obs(obs_);
      lines_[i]->dilate(offset_x);
 
@@ -123,6 +153,8 @@ protected:
  std::vector<std::shared_ptr<LineSegment<Dim>>> lines_;
 
  Vecf<Dim> local_bbox_{Vecf<Dim>::Zero()};
+ Vecf<Dim> local_left_bbox_{Vecf<Dim>::Zero()};
+
  Vecf<Dim> global_bbox_min_{Vecf<Dim>::Zero()}; // bounding box params
  Vecf<Dim> global_bbox_max_{Vecf<Dim>::Zero()};
 

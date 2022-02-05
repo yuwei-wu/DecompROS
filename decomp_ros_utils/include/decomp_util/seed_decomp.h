@@ -49,13 +49,13 @@ class SeedDecomp : public DecompBase<Dim> {
       Vecf<Dim> dir_h = Vecf<Dim>::UnitY();
 
       Vecf<Dim> pp1 = p_ + dir_h * this->local_bbox_(1);
-      Vecf<Dim> pp2 = p_ - dir_h * this->local_bbox_(1);
+      Vecf<Dim> pp2 = p_ - dir_h * this->local_left_bbox_(1);
       Vs.add(Hyperplane<Dim>(pp1, dir_h));
       Vs.add(Hyperplane<Dim>(pp2, -dir_h));
 
       // along y
       Vecf<Dim> pp3 = p_ + dir * this->local_bbox_(0);
-      Vecf<Dim> pp4 = p_ - dir * this->local_bbox_(0);
+      Vecf<Dim> pp4 = p_ - dir * this->local_left_bbox_(0);
       Vs.add(Hyperplane<Dim>(pp3, dir));
       Vs.add(Hyperplane<Dim>(pp4, -dir));
 
@@ -63,7 +63,7 @@ class SeedDecomp : public DecompBase<Dim> {
       if(Dim > 2) {
         Vecf<Dim> dir_v = Vecf<Dim>::UnitZ();
         Vecf<Dim> pp5 = p_ + dir_v * this->local_bbox_(2);
-        Vecf<Dim> pp6 = p_ - dir_v * this->local_bbox_(2);
+        Vecf<Dim> pp6 = p_ - dir_v * this->local_left_bbox_(2);
         Vs.add(Hyperplane<Dim>(pp5, dir_v));
         Vs.add(Hyperplane<Dim>(pp6, -dir_v));
       }

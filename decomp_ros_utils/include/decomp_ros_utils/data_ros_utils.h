@@ -52,6 +52,7 @@ inline vec_Vec3f cloud_to_vec(const sensor_msgs::PointCloud &cloud) {
   return pts;
 }
 
+
 inline Polyhedron3D ros_to_polyhedron(const decomp_ros_msgs::Polyhedron& msg){
   Polyhedron3D poly;
   for(unsigned int i = 0; i < msg.points.size(); i++){
