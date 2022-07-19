@@ -33,12 +33,18 @@ public:
  ///Set obstacle points
  void set_obs(const vec_Vecf<Dim> &obs) { obs_ = obs; }
 
- ///Set dimension of bounding box 
+  ///Set dimension of bounding box 
   void set_local_bbox(const Vecf<Dim>& bbox, const Vecf<Dim>& lbox) {
   local_bbox_ = bbox;
   local_left_bbox_ = lbox;
   }
 
+  void set_global_bbox(const Vecf<Dim> &origin, const Vecf<Dim> &dim) {
+    global_bbox_min_ = origin;
+    global_bbox_max_ = origin + dim;
+
+   }
+   
 
  ///Get the path that is used for dilation
  vec_Vecf<Dim> get_path() const { return path_; }
@@ -134,15 +140,15 @@ protected:
    add_global_bbox(Polyhedron<Dim> &Vs) {
      //**** add bound along X, Y, Z axis
      //*** Z
-     Vs.add(Hyperplane3D(Vec3f(0, 0, global_bbox_max_(2)), Vec3f(0, 0, 1)));
-     Vs.add(Hyperplane3D(Vec3f(0, 0, global_bbox_min_(2)), Vec3f(0, 0, -1)));
+     Vs.add(Hyperplane3D(Vec3f(0.0, 0.0, global_bbox_max_(2)), Vec3f(0.0, 0.0, 1.0)));
+     Vs.add(Hyperplane3D(Vec3f(0.0, 0.0, global_bbox_min_(2)), Vec3f(0.0, 0.0, -1.0)));
 
      //*** X
-     Vs.add(Hyperplane3D(Vec3f(global_bbox_max_(0), 0, 0), Vec3f(1, 0, 0)));
-     Vs.add(Hyperplane3D(Vec3f(global_bbox_min_(0), 0, 0), Vec3f(-1, 0, 0)));
+     Vs.add(Hyperplane3D(Vec3f(global_bbox_max_(0), 0.0, 0.0), Vec3f(1.0, 0.0, 0.0)));
+     Vs.add(Hyperplane3D(Vec3f(global_bbox_min_(0), 0.0, 0.0), Vec3f(-1.0, 0.0, 0.0)));
      //*** Y
-     Vs.add(Hyperplane3D(Vec3f(0, global_bbox_max_(1), 0), Vec3f(0, 1, 0)));
-     Vs.add(Hyperplane3D(Vec3f(0, global_bbox_max_(1), 0), Vec3f(0, -1, 0)));
+     Vs.add(Hyperplane3D(Vec3f(0.0, global_bbox_max_(1), 0.0), Vec3f(0.0, 1.0, 0.0)));
+     Vs.add(Hyperplane3D(Vec3f(0.0, global_bbox_min_(1), 0.0), Vec3f(0.0, -1.0, 0.0)));  //bug issue
    }
 
  vec_Vecf<Dim> path_;
