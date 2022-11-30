@@ -46,6 +46,13 @@ public:
    }
    
 
+  void set_vertical_bbox(const Vecf<2> &global_vertical_bbox) {
+    // min max
+    global_vertical_bbox_ = global_vertical_bbox;
+
+   }
+
+
  ///Get the path that is used for dilation
  vec_Vecf<Dim> get_path() const { return path_; }
 
@@ -117,7 +124,14 @@ public:
    if(global_bbox_min_.norm() != 0 || global_bbox_max_.norm() != 0) {
      for(auto& it: polyhedrons_)
        add_global_bbox(it);
+   }else if (global_vertical_bbox_.norm()!=0)
+   {
+     for(auto& it: polyhedrons_)
+       add_vertical_bbox(it);
    }
+
+
+
 
  }
 
@@ -151,6 +165,17 @@ protected:
      Vs.add(Hyperplane3D(Vec3f(0.0, global_bbox_min_(1), 0.0), Vec3f(0.0, -1.0, 0.0)));  //bug issue
    }
 
+
+ template<int U = Dim>
+   typename std::enable_if<U == 3>::type
+   add_vertical_bbox(Polyhedron<Dim> &Vs) {
+     //**** add bound along X, Y, Z axis
+     //*** Z
+     Vs.add(Hyperplane3D(Vec3f(0.0, 0.0, global_vertical_bbox_(1)), Vec3f(0.0, 0.0, 1.0)));
+     Vs.add(Hyperplane3D(Vec3f(0.0, 0.0, global_vertical_bbox_(0)), Vec3f(0.0, 0.0, -1.0)));
+   }
+
+
  vec_Vecf<Dim> path_;
  vec_Vecf<Dim> obs_;
 
@@ -163,6 +188,8 @@ protected:
 
  Vecf<Dim> global_bbox_min_{Vecf<Dim>::Zero()}; // bounding box params
  Vecf<Dim> global_bbox_max_{Vecf<Dim>::Zero()};
+
+ Vecf<2> global_vertical_bbox_{Vecf<2>::Zero()}; // bounding box params
 
 };
 
